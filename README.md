@@ -1,6 +1,6 @@
 # JetBrains HTTP Client + .NET API demo
 
-This repository demonstrates manual API invocation with a JetBrains `.http` file. The sample is a small authenticated task API using CQRS and event sourcing.
+This repository demonstrates manual API invocation with a JetBrains `.http` file. The sample is a .NET 10 minimal API using JWT authentication, CQRS, and event sourcing.
 
 ## Run it
 
@@ -21,3 +21,11 @@ The demo credentials are `demo` / `demo-password`. They and the JWT key are inte
 - Storage: SQLite contains only `events` (the append-only domain event store) and `sessions` (login sessions).
 
 This is deliberately compact and replay-oriented. A production event store would also add optimistic concurrency, schema/version handling, projections, password hashing/user management, session cleanup, and key rotation.
+
+## Test it
+
+```bash
+dotnet test
+```
+
+The xUnit integration suite boots the real minimal API in memory and gives each test an isolated SQLite database. Fluent Assertions verifies both HTTP behavior and persisted event/session records.

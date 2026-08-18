@@ -9,13 +9,13 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("Database")
-    ?? throw new InvalidOperationException("A Database connection string is required.");
 var jwt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
     ?? throw new InvalidOperationException("JWT settings are required.");
 
 builder.Services.AddSingleton(jwt);
-builder.Services.AddSingleton(new SqliteDatabase(connectionString));
+builder.Services.AddSingleton(sp => new SqliteDatabase(
+    sp.GetRequiredService<IConfiguration>().GetConnectionString("Database")
+        ?? throw new InvalidOperationException("A Database connection string is required.")));
 builder.Services.AddSingleton<EventStore>();
 builder.Services.AddSingleton<TaskCommandHandler>();
 builder.Services.AddSingleton<TaskQueryHandler>();
@@ -87,14 +87,18 @@ app.MapPost("/auth/login", async (HttpRequest request, TokenService tokens, ICon
 
 app.MapPost("/api/tasks", async (CreateTask command, TaskCommandHandler handler, ClaimsPrincipal user) =>
 {
+    if (string.IsNullOrWhiteSpace(command.Title))
+        return Results.BadRequest(new { error = "Title is required." });
     var result = await handler.Handle(command, user.Identity!.Name!);
     return Results.Created($"/api/tasks/{result.Id}", result);
 }).RequireAuthorization();
 
-app.MapGet("/api/tasks", async (string? search, string? status, int page, int pageSize,
+app.MapGet("/api/tasks", async (string? search, string? status, int? page, int? pageSize,
     TaskQueryHandler handler) =>
 {
-    var query = new GetTasks(search, status, page <= 0 ? 1 : page, Math.Clamp(pageSize <= 0 ? 10 : pageSize, 1, 100));
+    var normalizedPage = page is null or <= 0 ? 1 : page.Value;
+    var normalizedPageSize = pageSize is null or <= 0 ? 10 : Math.Clamp(pageSize.Value, 1, 100);
+    var query = new GetTasks(search, status, normalizedPage, normalizedPageSize);
     return Results.Ok(await handler.Handle(query));
 }).RequireAuthorization();
 
@@ -146,8 +150,6 @@ public sealed class TaskCommandHandler(EventStore store)
 {
     public async Task<TaskCreated> Handle(CreateTask command, string username)
     {
-        if (string.IsNullOrWhiteSpace(command.Title))
-            throw new BadHttpRequestException("Title is required.");
         var created = new TaskCreated(Guid.NewGuid(), command.Title.Trim(), command.Description?.Trim(),
             "open", username, DateTimeOffset.UtcNow);
         await store.Append(created.Id, nameof(TaskCreated), created, created.CreatedAt);
@@ -240,3 +242,5 @@ public sealed class SqliteDatabase(string connectionString)
         return connection;
     }
 }
+
+public partial class Program;
