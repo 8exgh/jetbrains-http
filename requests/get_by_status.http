@@ -1,0 +1,7 @@
+
+
+
+
+### Query: status filter
+GET {{baseUrl}}/api/tasks?status=open&page=1&pageSize=3
+Authorization: Bearer {{$auth.token("demo-jwt")}}

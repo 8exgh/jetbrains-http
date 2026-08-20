@@ -1,0 +1,3 @@
+### Query: pagination
+GET {{baseUrl}}/api/tasks?page=1&pageSize=5
+Authorization: Bearer {{$auth.token("demo-jwt")}}

@@ -7,6 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetBrainsHttpDemo.Api", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetBrainsHttpDemo.Api.Tests", "tests/JetBrainsHttpDemo.Api.Tests/JetBrainsHttpDemo.Api.Tests.csproj", "{9C062DB3-40A4-4E1F-80CF-EA7BC1F2517C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http", "http", "{8209C939-55F7-4EA8-A0EB-BAAF62140FC0}"
+	ProjectSection(SolutionItems) = preProject
+		requests\get_by_text_search.http = requests\get_by_text_search.http
+		requests\get_first_page_but_page_size_5.http = requests\get_first_page_but_page_size_5.http
+		requests\get_first_page_with_defaults.http = requests\get_first_page_with_defaults.http
+		requests\___login.http = requests\___login.http
+		requests\create_task.http = requests\create_task.http
+		requests\http-client.env.json = requests\http-client.env.json
+		requests\get_by_status.http = requests\get_by_status.http
+		requests\create_task_errors.http = requests\create_task_errors.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

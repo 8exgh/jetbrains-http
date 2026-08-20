@@ -1,0 +1,10 @@
+
+### Create a task (acquires/reuses the shared JWT automatically)
+POST {{baseUrl}}/api/tasks
+Authorization: Bearer {{$auth.token("demo-jwt")}}
+Content-Type: application/json
+
+{
+  "title": "7777 Learn the JetBrains HTTP Client",
+  "description": "Invoke an authenticated CQRS command"
+}

@@ -1,0 +1,3 @@
+### Query: free-text filter (title and description)
+GET {{baseUrl}}/api/tasks?search=888&page=1&pageSize=10
+Authorization: Bearer {{$auth.token("demo-jwt")}}
