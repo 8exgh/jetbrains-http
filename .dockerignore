@@ -1,0 +1,12 @@
+.git
+.idea
+.github
+**/bin
+**/obj
+tests
+requests
+*.db
+*.db-shm
+*.db-wal
+README.md
+JetBrainsHttpDemo.sln.DotSettings.user
