@@ -3,8 +3,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 WORKDIR /src
 
-# Restore first so dependency layers cache independently of source changes
-COPY global.json ./
+# Restore first so dependency layers cache independently of source changes.
+# global.json is intentionally not copied: it pins a feature band the SDK image may not carry.
 COPY src/JetBrainsHttpDemo.Api/JetBrainsHttpDemo.Api.csproj src/JetBrainsHttpDemo.Api/
 RUN dotnet restore src/JetBrainsHttpDemo.Api/JetBrainsHttpDemo.Api.csproj
 
